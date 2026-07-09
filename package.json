@@ -7,6 +7,7 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.solutions.json --noEmit",
     "verify": "tsc -p tsconfig.solutions.json --noEmit && vitest run",
+    "check": "node scripts/check.mjs",
     "check:problem": "tsc --noEmit",
     "run": "tsx",
     "test": "vitest run"
