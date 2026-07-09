@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  // Verifies ONLY the worked solutions — the clean baseline. Used by
+  // `npm run typecheck` / `npm run verify`. Problem (starter) files are
+  // excluded because they intentionally contain TODOs that don't typecheck.
+  "include": ["src/**/*.ts", "topics/**/*.solution.ts", "topics/**/*.test-d.ts"],
+  "exclude": ["node_modules", "dist", "topics/**/*.problem.ts"]
+}
