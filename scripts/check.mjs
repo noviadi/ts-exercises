@@ -36,7 +36,9 @@ try {
 
 const rel = relative(root, targetAbs);
 const includeTarget = st.isDirectory() ? `${rel}/**/*.ts` : rel;
-const tmpPath = join(root, ".tsconfig.check.json");
+// Unique per process: concurrent `npm run check` invocations must not share or
+// clobber each other's throwaway config. `pid` is one file per OS process.
+const tmpPath = join(root, `.tsconfig.check.${process.pid}.json`);
 
 const config = {
   extends: "./tsconfig.json",
@@ -45,10 +47,13 @@ const config = {
 };
 writeFileSync(tmpPath, JSON.stringify(config, null, 2));
 
-const result = spawnSync("node_modules/.bin/tsc", ["-p", tmpPath, "--noEmit"], {
-  stdio: "inherit",
-  cwd: root,
-});
-
-rmSync(tmpPath, { force: true });
+let result;
+try {
+  result = spawnSync("node_modules/.bin/tsc", ["-p", tmpPath, "--noEmit"], {
+    stdio: "inherit",
+    cwd: root,
+  });
+} finally {
+  rmSync(tmpPath, { force: true });
+}
 process.exit(result.status ?? 1);
